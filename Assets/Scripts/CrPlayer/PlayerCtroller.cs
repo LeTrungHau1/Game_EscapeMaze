@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -18,17 +19,21 @@ public class PlayerCtroller : MonoBehaviour
     [SerializeField] private bool isdoulejump;
     [SerializeField] private bool isDashing;
     [SerializeField] private bool canDash = true;
-    [SerializeField] private float dashingPower = 24f;
+    [SerializeField] private float dashingPower = 10f;
     [SerializeField] private float dashingTime = 0.2f;
     [SerializeField] private float dashingCooldow = 1f;
 
 
+    
+   
     private enum MovementState
     {
         aniplayeridle,
         aniplayerrun,
         aniplayerJump,
-        aniplayerDie
+        aniplayerAttack,
+        aniplayerDizzy,
+        aniplayerDash
     }
     private MovementState movementState;
     private void Awake()
@@ -37,7 +42,6 @@ public class PlayerCtroller : MonoBehaviour
         spriteRenderer = GetComponent<SpriteRenderer>();
         ani = GetComponent<Animator>();
         capsuleCollider = GetComponent<CapsuleCollider2D>();
-        trailRenderer = GetComponent<TrailRenderer>();
     }
 
     void Start()
@@ -66,16 +70,22 @@ public class PlayerCtroller : MonoBehaviour
             StartCoroutine(Dash());
            
         }
+        if (Input.GetMouseButton(0))
+        {
+            movementState = MovementState.aniplayerAttack;
+            ani.SetInteger("State", (int)movementState);
+           
 
+        }
 
     }
     private void FixedUpdate()
     {
-        Move();
         if (isDashing)
         {
             return;
         }
+        Move();      
     }
 
    
@@ -83,11 +93,13 @@ public class PlayerCtroller : MonoBehaviour
     {
         if(directionx>0)
         {
-            spriteRenderer.flipX = false;
+            //spriteRenderer.flipX = false;
+            transform.localScale = new Vector3(1, 1, 1); // Quay mặt về hướng trái
         }
         if(directionx<0)
         {
-            spriteRenderer.flipX = true;
+            //spriteRenderer.flipX = true;
+            transform.localScale = new Vector3(-1, 1, 1); // Quay mặt về hướng trái
         }
     }
     private void Move()
@@ -104,7 +116,7 @@ public class PlayerCtroller : MonoBehaviour
         {
             movementState = MovementState.aniplayeridle;
         }
-        if(rb.velocity.y >0.1f)
+        if(rb.velocity.y >0.1f || rb.velocity.y<-0.1)
         {
             movementState = MovementState.aniplayerJump;
         }
@@ -113,12 +125,12 @@ public class PlayerCtroller : MonoBehaviour
     private void jumping()
     {
 
-        if (Input.GetButtonDown("Jump"))
+        if (Input.GetButtonDown("Jump") || Input.GetKeyDown(KeyCode.W) || Input.GetKeyDown(KeyCode.UpArrow))
         {
             isjumping = true;
             
         }
-        if (Input.GetButtonUp("Jump"))
+        if (Input.GetButtonUp("Jump") || Input.GetKeyUp(KeyCode.W) || Input.GetKeyUp(KeyCode.UpArrow))
         {
             isjumping = false;
         }
@@ -127,7 +139,7 @@ public class PlayerCtroller : MonoBehaviour
             isdoulejump = false;
         }
 
-        if (Input.GetButtonDown("Jump"))
+        if (Input.GetButtonDown("Jump") || Input.GetKeyDown(KeyCode.W) || Input.GetKeyDown(KeyCode.UpArrow))
         {
             if (isgrouder() || isdoulejump)
             {
@@ -148,7 +160,26 @@ public class PlayerCtroller : MonoBehaviour
         isDashing = true;//chặn input khi nhân vật đang lướt
         float originalGravity = rb.gravityScale;
         rb.gravityScale = 0;//set trong lúc =0 để nhân vật dang nhảy mà lướt để khong bị rối
-        rb.velocity = new Vector2(directionx * dashingPower, 0f);//khoản cách lướt của nhân vật
+
+
+        //movementState = MovementState.aniplayerDash;//animation
+        //ani.SetInteger("State", (int)movementState);
+
+
+        if (spriteRenderer.flipX==true)
+        {
+            rb.velocity = new Vector2( -dashingPower, 0f);//khoản cách lướt của nhân vật
+            Debug.Log("1");
+        }
+        else
+        {
+            rb.velocity = new Vector2(dashingPower, 0f);//khoản cách lướt của nhân vật
+            Debug.Log("2");
+        }
+        //rb.velocity = new Vector2(directionx * dashingPower, 0f);//khoản cách lướt của nhân vật
+
+
+
         trailRenderer.emitting = true;//hiển thị hướng về khi lướt
         yield return new WaitForSeconds(dashingTime);// khoản thời gian nhân vật lướt
         trailRenderer.emitting = false;//tat duong về khi lướt
