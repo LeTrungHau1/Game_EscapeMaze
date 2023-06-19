@@ -5,6 +5,9 @@ TagManager:
   serializedVersion: 2
   tags:
   - Trap
+  - Enemy
+  - PlayerHit
+  - EnemyHit
   layers:
   - Default
   - TransparentFX
@@ -12,8 +15,8 @@ TagManager:
   - ground
   - Water
   - UI
-  - 
-  - 
+  - Player
+  - Enemy
   - 
   - 
   - 

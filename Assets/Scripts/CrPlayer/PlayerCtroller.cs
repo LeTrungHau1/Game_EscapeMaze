@@ -9,23 +9,28 @@ public class PlayerCtroller : MonoBehaviour
     [SerializeField] private SpriteRenderer spriteRenderer;
     [SerializeField] private Animator ani;
     [SerializeField] private CapsuleCollider2D capsuleCollider;
+    [SerializeField] private BoxCollider2D boxCollider;
     [SerializeField] LayerMask jumpbleground;
     [SerializeField] private TrailRenderer trailRenderer;
 
-    [SerializeField] private float directionx;
-    [SerializeField] private float moveSpeed;
-    [SerializeField] private float jumpheight;
-    [SerializeField] private bool isjumping;
-    [SerializeField] private bool isdoulejump;
-    [SerializeField] private bool isDashing;
-    [SerializeField] private bool canDash = true;
-    [SerializeField] private float dashingPower = 10f;
-    [SerializeField] private float dashingTime = 0.2f;
-    [SerializeField] private float dashingCooldow = 1f;
+    [SerializeField] public float directionx;
+    [SerializeField] public float moveSpeed;
+    [SerializeField] public float jumpheight;
+    [SerializeField] public bool isjumping;
+    [SerializeField] public bool isdoulejump;
+    [SerializeField] public bool isDashing;
+    [SerializeField] public bool canDash = true;
+    [SerializeField] public float dashingPower = 10f;
+    [SerializeField] public float dashingTime = 0.2f;
+    [SerializeField] public float dashingCooldow = 1f;
+    [SerializeField] public bool boolTrap = false;
+    [SerializeField] public GameObject HBOut;
+    public LayerMask layerMask;
+    public Transform attatckPosition;
+    public float radius;
 
 
-    
-   
+
     private enum MovementState
     {
         aniplayeridle,
@@ -42,11 +47,13 @@ public class PlayerCtroller : MonoBehaviour
         spriteRenderer = GetComponent<SpriteRenderer>();
         ani = GetComponent<Animator>();
         capsuleCollider = GetComponent<CapsuleCollider2D>();
+        boxCollider = GetComponent<BoxCollider2D>();
     }
 
     void Start()
     {
         trailRenderer.emitting = false;
+        //boxCollider.enabled = false;
     }
 
     // Update is called once per frame
@@ -58,24 +65,24 @@ public class PlayerCtroller : MonoBehaviour
         }
         directionx = Input.GetAxisRaw("Horizontal");
         
-
         StateAnimation();
         ChanegeDirction();
         jumping();
-
-
-       
+      
         if (Input.GetKeyDown(KeyCode.LeftShift) && canDash)
         {
-            StartCoroutine(Dash());
-           
+            StartCoroutine(Dash());          
         }
         if (Input.GetMouseButton(0))
         {
             movementState = MovementState.aniplayerAttack;
             ani.SetInteger("State", (int)movementState);
            
-
+            //boxCollider.enabled = true;
+        }
+        else
+        {
+            //boxCollider.enabled = false;
         }
 
     }
@@ -93,13 +100,14 @@ public class PlayerCtroller : MonoBehaviour
     {
         if(directionx>0)
         {
-            //spriteRenderer.flipX = false;
             transform.localScale = new Vector3(1, 1, 1); // Quay mặt về hướng trái
+            HBOut.transform.localScale = new Vector3(1, 1, 1);
         }
         if(directionx<0)
         {
-            //spriteRenderer.flipX = true;
+            
             transform.localScale = new Vector3(-1, 1, 1); // Quay mặt về hướng trái
+            HBOut.transform.localScale = new Vector3(-1, 1, 1);
         }
     }
     private void Move()
@@ -120,6 +128,11 @@ public class PlayerCtroller : MonoBehaviour
         {
             movementState = MovementState.aniplayerJump;
         }
+        if(boolTrap==true)
+        {
+            movementState = MovementState.aniplayerDizzy;
+        }
+        
         ani.SetInteger("State", (int)movementState);
     }
     private void jumping()
@@ -166,7 +179,7 @@ public class PlayerCtroller : MonoBehaviour
         //ani.SetInteger("State", (int)movementState);
 
 
-        if (spriteRenderer.flipX==true)
+        if (transform.localScale.x== -1)
         {
             rb.velocity = new Vector2( -dashingPower, 0f);//khoản cách lướt của nhân vật
             Debug.Log("1");
@@ -188,5 +201,48 @@ public class PlayerCtroller : MonoBehaviour
         yield return new WaitForSeconds(dashingCooldow); //thoi gian cho de luot lan tiep theo
         canDash = true;// cho nhan vat luot lan tiep theo
         Debug.Log("aaaa");
+    }
+    private void OnTriggerEnter2D(Collider2D collision)
+    {
+
+        if (collision.gameObject.CompareTag("Trap"))
+        {
+            boolTrap = true;
+            Debug.Log("trap chạm player");
+        }
+
+    }
+    private void OnTriggerExit2D(Collider2D collision)
+    {
+        if (collision.gameObject.CompareTag("Trap"))
+        {
+            boolTrap = false;
+            Debug.Log("out trap");
+        }
+    }
+
+    private void AttackEnemy()
+    {
+        Collider2D collider = Physics2D.OverlapCircle(attatckPosition.position, radius, layerMask);
+        if (collider != null)
+        {
+            DameEnemy dameEnemy = collider.gameObject.GetComponent<DameEnemy>();
+            if(dameEnemy != null)
+            {
+                dameEnemy.TakeDameEnemy(DamePlayer.instance.damePlayer);
+            }
+            PopupDamage uIManager = collider.gameObject.GetComponent<PopupDamage>();
+            if(uIManager != null)
+            {
+                uIManager.EnemyTookDanage(DamePlayer.instance.damePlayer);
+            }
+        }
+
+    }
+
+    private void OnDrawGizmos()
+    {
+        Gizmos.color = Color.red;
+        Gizmos.DrawWireSphere(attatckPosition.position, radius);
     }
 }

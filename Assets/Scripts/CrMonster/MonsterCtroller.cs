@@ -8,18 +8,19 @@ public class MonsterCtroller : MonoBehaviour
     [SerializeField] private Rigidbody2D rb;
     [SerializeField] private SpriteRenderer spriteRenderer;
     [SerializeField] private Animator ani;
-    
+
     [SerializeField] public Transform pointa;
     [SerializeField] public Transform pointb;
     [SerializeField] public Transform player;
     [SerializeField] private Transform targetPoint;
     [SerializeField] public float speed;
-    [SerializeField] public int rd=0;
-    [SerializeField] public bool isChasing=false;
-   
-
-
-
+    [SerializeField] public int rd = 0;
+    [SerializeField] public bool isAttack = false;
+    [SerializeField] public GameObject HBOutEnemy;
+    //private DameEnemy enemy;
+    public LayerMask layerMask;
+    public Transform attatckPosition;
+    public float radius;
 
     private enum MovementState
     {
@@ -28,7 +29,7 @@ public class MonsterCtroller : MonoBehaviour
         aniMonsterAttack1,
         aniMonsterAttack2,
         aniMonsterStun,
-        
+
     }
     private MovementState movementState;
 
@@ -36,42 +37,41 @@ public class MonsterCtroller : MonoBehaviour
     private void Start()
     {
 
-      
+
         rb = GetComponent<Rigidbody2D>();
         ani = GetComponent<Animator>();
         spriteRenderer = GetComponent<SpriteRenderer>();
         ani.SetInteger("State", (int)movementState);
         targetPoint = pointa; // Bắt đầu với điểm A
-       
-        
+
+
+    }
+    private void Update()
+    {
+        //isAttack = enemyIsAttack.isAttack;
     }
     private void FixedUpdate()
     {
 
         if (targetInside() == false)
         {
-
             MoveMonster();
         }
         else
         {
-            MovePlayer();
-            //InvokeRepeating("AttackPlayer", 1.5f, 2f);
-            AttackPlayer();
+            ChasePlayer();
+        }
+
+        if(isAttack)
+        {
+            UpdataAttackAnimation();          
         }
     }
 
-    private void Update()
+    private void MoveMonster()
     {
-
-
-       
-
-    }
-   private void MoveMonster()
-   {
-        
-       
+        //Debug.Log("Move");
+        if (isAttack) return;
         // Di chuyển quái vật
         transform.position = Vector2.MoveTowards(transform.position, targetPoint.position, speed * Time.deltaTime);
 
@@ -83,16 +83,18 @@ public class MonsterCtroller : MonoBehaviour
         if (transform.position.x < targetPoint.position.x)
         {
             transform.localScale = new Vector3(1, 1, 1); // Quay mặt về hướng trái
+            HBOutEnemy.transform.localScale = new Vector3(1, 1, 1);
             //spriteRenderer.flipX = false;
         }
         else if (transform.position.x > targetPoint.position.x)
         {
             transform.localScale = new Vector3(-1, 1, 1); // Quay mặt về hướng phải
+            HBOutEnemy.transform.localScale = new Vector3(-1, 1, 1);
             //spriteRenderer.flipX = true;
         }
 
         // Kiểm tra nếu quái vật đã đến điểm đích
-        if (Vector2.Distance(transform.position, targetPoint.position) < 0.5f )
+        if (Vector2.Distance(transform.position, targetPoint.position) < 0.5f)
         {
             // Đổi hướng và chọn điểm đến mới
             if (targetPoint == pointa)
@@ -104,85 +106,84 @@ public class MonsterCtroller : MonoBehaviour
                 targetPoint = pointa;
             }
         }
-       
-   }
-   private void MovePlayer()
-   {
-        if (Vector3.Distance(transform.position, player.position) > 0.001f)
+
+    }
+    private void ChasePlayer()
+    {
+        if (isAttack) return;
+        //Debug.Log("Chase");
+        if (Vector3.Distance(transform.position, player.position) > 0.1f)
         {
             // Di chuyển tới player
-            transform.position = Vector2.MoveTowards(transform.position, player.position, speed *(float) 1.5 * Time.deltaTime);
-           
+            transform.position = Vector2.MoveTowards(transform.position, player.position, speed * (float)1.5 * Time.deltaTime);
+            //animation
+            movementState = MovementState.aniMonsterrun;
+            ani.SetInteger("State", (int)movementState);
+            // Quay mặt quái vật khi đổi hướng
+            if (transform.position.x < player.position.x)
+            {
+                transform.localScale = new Vector3(1, 1, 1); // Quay mặt về hướng trái
+                HBOutEnemy.transform.localScale = new Vector3(1, 1, 1);
+            }
+            else if (transform.position.x > player.position.x)
+            {
+                transform.localScale = new Vector3(-1, 1, 1); // Quay mặt về hướng phải
+                HBOutEnemy.transform.localScale = new Vector3(-1, 1, 1);
+            }
 
         }
-        else
-        {
-            transform.position = Vector2.zero;
-        }
-
-        //animation
-        movementState = MovementState.aniMonsterrun;
-        ani.SetInteger("State", (int)movementState);
-        // Quay mặt quái vật khi đổi hướng
-        if (transform.position.x < player.position.x)
-        {
-            transform.localScale = new Vector3(1, 1, 1); // Quay mặt về hướng trái
-
-        }
-        else if (transform.position.x > player.position.x)
-        {
-            transform.localScale = new Vector3(-1, 1, 1); // Quay mặt về hướng phải
-
-        }
-        
-          
-       
     }
     private bool targetInside()
     {
-        if(pointa.position.x<= player.position.x &&player.position.x<=pointb.position.x)
+        if (pointa.position.x <= player.position.x && player.position.x <= pointb.position.x)
         {
             return true;
         }
         return false;
     }
+
+    private void UpdataAttackAnimation()
+    {
+        movementState = MovementState.aniMonsterAttack1;
+        ani.SetInteger("State", (int)movementState);
+    }
     private void AttackPlayer()
     {
-        if (isChasing == true)
+        Collider2D collider = Physics2D.OverlapCircle(attatckPosition.position, radius, layerMask);
+        if (collider != null)
         {
-            //animation
-
-            //if (rd == 0)
-            //{
-            //    movementState = MovementState.aniMonsterAttack1;
-            //    rd ++;
-            //}
-            //else
-            //{
-            //    movementState = MovementState.aniMonsterAttack2;
-            //    rd --;
-            //}
-            movementState = MovementState.aniMonsterAttack1;
-            ani.SetInteger("State", (int)movementState);
+            DamePlayer dame = collider.gameObject.GetComponent<DamePlayer>();
+            if (dame != null)
+            {
+                dame.TakeDamePlayer(DameEnemy.Instance.currenDameEnemy);
+            }
+            PopupDamage uIManager = collider.gameObject.GetComponent<PopupDamage>();
+            if (uIManager != null)
+            {
+                uIManager.PlayerTookDanage(DamePlayer.instance.damePlayer);
+            }
         }
+
     }
     private void OnTriggerEnter2D(Collider2D collision)
     {
         if (collision.CompareTag("Player"))
         {
-            isChasing = true;
-           
-            Debug.Log("chạm player");
-
+            isAttack = true;
         }
     }
-
+    
     private void OnTriggerExit2D(Collider2D collision)
     {
         if (collision.CompareTag("Player"))
         {
-            isChasing = false;
-            Debug.Log("out");
+            isAttack = false;
         }
+    }
+
+    private void OnDrawGizmos()
+    {
+        Gizmos.color = Color.red;
+        Gizmos.DrawWireSphere(attatckPosition.position, radius);
     }
 }
