@@ -68,8 +68,8 @@ public class PlayerCtroller : MonoBehaviour
         StateAnimation();
         ChanegeDirction();
         jumping();
-      
-        if (Input.GetKeyDown(KeyCode.LeftShift) && canDash)
+
+        if ((Input.GetKeyDown(KeyCode.LeftShift) && canDash) || (Input.GetMouseButton(1) && canDash)) 
         {
             StartCoroutine(Dash());          
         }

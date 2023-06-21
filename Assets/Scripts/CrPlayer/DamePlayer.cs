@@ -11,7 +11,7 @@ public class DamePlayer : MonoBehaviour
     [SerializeField] public DameEnemy dameEnemy;
     [SerializeField] public float maxHealthPlayer = 100;
     [SerializeField] public float currentHealthPlayer;
-    [SerializeField] public float damePlayer;
+    [SerializeField] public float damePlayer=10f;
     [SerializeField] public Image image;
    
     private void Awake()
@@ -20,6 +20,7 @@ public class DamePlayer : MonoBehaviour
     }
     void Start()
     {
+        
        dameEnemy = GetComponent<DameEnemy>();
        currentHealthPlayer = maxHealthPlayer;
        image.fillAmount = currentHealthPlayer/maxHealthPlayer;
@@ -40,6 +41,12 @@ public class DamePlayer : MonoBehaviour
         // Xử lý logic khi Enemy bị tiêu diệt
         Debug.Log("player die.");
         gameObject.SetActive(false);
+        //hiện thua
+        if (UiManager.HasInstance)
+        {
+            Time.timeScale = 0f;
+            UiManager.Instance.ActiveLosePanel(true);
+        }
     }
 
 

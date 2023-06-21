@@ -15,7 +15,13 @@ public class DameEnemy : MonoBehaviour
     [SerializeField] public float currenDameEnemy = 10f; 
     [SerializeField] public Image image;
     [SerializeField] public bool isDamePlayer=false;
-    [SerializeField] private float timeDamePlayer = 0.5f;
+
+    //sống dậy
+    public bool initialEnabled=false;
+    public bool OnRevival=false;
+
+    public float Revival = 0f;
+    //[SerializeField] private float timeDamePlayer = 0.5f;
 
     private void Awake()
     {
@@ -26,6 +32,7 @@ public class DameEnemy : MonoBehaviour
         damePlayer = GetComponent<DamePlayer>();
         currentHealth = maxHealth; 
         image.fillAmount = currentHealth / maxHealth;
+        initialEnabled = gameObject.activeSelf;
     }
     public void TakeDameEnemy(float damaPlayer)
     {
@@ -36,7 +43,12 @@ public class DameEnemy : MonoBehaviour
 
         if (currentHealth <= 0)
         {
-            Die(); 
+            Die();
+            if(OnRevival==true)
+            {
+                 Invoke("hoi", Revival);
+            }
+           
         }
     }
     private void Die()
@@ -44,7 +56,16 @@ public class DameEnemy : MonoBehaviour
         // Xử lý logic khi Enemy bị tiêu diệt
         Debug.Log("Enemy die.");
        gameObject.SetActive(false);
+       
     }
-   
+    void hoi()
+    {
+        Debug.Log("hồi");
+        gameObject.SetActive(true);
+        gameObject.SetActive(DameEnemy.Instance.initialEnabled);
+       
+        currentHealth =maxHealth;
+       image.fillAmount =currentHealth /maxHealth;
+    }
 }
 

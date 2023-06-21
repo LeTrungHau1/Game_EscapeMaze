@@ -43,7 +43,7 @@ public class MonsterCtroller : MonoBehaviour
         spriteRenderer = GetComponent<SpriteRenderer>();
         ani.SetInteger("State", (int)movementState);
         targetPoint = pointa; // Bắt đầu với điểm A
-
+        player = GameObject.FindGameObjectWithTag("Player").transform;
 
     }
     private void Update()
@@ -112,7 +112,7 @@ public class MonsterCtroller : MonoBehaviour
     {
         if (isAttack) return;
         //Debug.Log("Chase");
-        if (Vector3.Distance(transform.position, player.position) > 0.1f)
+        if (Vector3.Distance(transform.position, player.position) > 0.05f)
         {
             // Di chuyển tới player
             transform.position = Vector2.MoveTowards(transform.position, player.position, speed * (float)1.5 * Time.deltaTime);
@@ -155,12 +155,14 @@ public class MonsterCtroller : MonoBehaviour
             DamePlayer dame = collider.gameObject.GetComponent<DamePlayer>();
             if (dame != null)
             {
+              
                 dame.TakeDamePlayer(DameEnemy.Instance.currenDameEnemy);
             }
             PopupDamage uIManager = collider.gameObject.GetComponent<PopupDamage>();
             if (uIManager != null)
             {
-                uIManager.PlayerTookDanage(DamePlayer.instance.damePlayer);
+               
+                uIManager.PlayerTookDanage(DameEnemy.Instance.currenDameEnemy);
             }
         }
 
