@@ -87,7 +87,8 @@ public class enemyGFX : MonoBehaviour
             PopupDamage uIManager = collider.gameObject.GetComponent<PopupDamage>();
             if (uIManager != null)
             {
-                uIManager.PlayerTookDanage(DamePlayer.instance.damePlayer);
+                //uIManager.PlayerTookDanage(DamePlayer.instance.damePlayer);
+                uIManager.PlayerTookDanage(DameEnemy.Instance.currenDameEnemy);
             }
         }
 

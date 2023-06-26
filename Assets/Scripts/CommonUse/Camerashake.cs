@@ -6,11 +6,12 @@ using UnityEngine;
 public class Camerashake : MonoBehaviour
 {
     public CinemachineImpulseSource CinemachineImpulseSource;
-    void Update()
+    private void Start()
     {
-        if (Input.GetMouseButtonDown(0))
-        {
-            CinemachineImpulseSource.GenerateImpulse(Camera.main.transform.forward);
-        }
+        InvokeRepeating("ShakeCamera", 2f, 2f);
+    }
+    void ShakeCamera()
+    {
+        CinemachineImpulseSource.GenerateImpulse(Camera.main.transform.forward);
     }
 }

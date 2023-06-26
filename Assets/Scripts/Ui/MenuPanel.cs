@@ -13,6 +13,7 @@ public class MenuPanel : MonoBehaviour
             
             UiManager.Instance.ActiveMenuPanel(false);        
             SceneManager.LoadScene("Level1");
+            GameManager.Instance.Startgame();
             UiManager.Instance.ActiveGamePanel(true);
         }
       

@@ -6,8 +6,8 @@ public class CONST
 {
     public const string BGM_VOLUME_KEY = "BMG_VULUME_KEY";
     public const string SE_VOLUME_KEY = "SE_VULUME_KEY";
-    public const float BMG_VOLUME_DEFAULT = 0.2f;
-    public const float SE_VOLUME_DEFAULT = 1f;
+    public const float BMG_VOLUME_DEFAULT = 0.1f;
+    public const float SE_VOLUME_DEFAULT = 0.5f;
 
 
     //time it takse for the bgm to fade

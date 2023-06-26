@@ -4,6 +4,7 @@ using UnityEngine;
 
 public class BossCtroller : MonoBehaviour
 {
+    public DameEnemy d;
 
     [SerializeField] private Rigidbody2D rb;
     [SerializeField] private SpriteRenderer spriteRenderer;
@@ -37,7 +38,7 @@ public class BossCtroller : MonoBehaviour
     private void Start()
     {
 
-
+        d=GetComponent<DameEnemy>();
         rb = GetComponent<Rigidbody2D>();
         ani = GetComponent<Animator>();
         spriteRenderer = GetComponent<SpriteRenderer>();
@@ -155,12 +156,16 @@ public class BossCtroller : MonoBehaviour
             DamePlayer dame = collider.gameObject.GetComponent<DamePlayer>();
             if (dame != null)
             {
-                dame.TakeDamePlayer(DameEnemy.Instance.currenDameEnemy);
+                //dame.TakeDamePlayer(DameEnemy.Instance.currenDameEnemy);
+                dame.TakeDamePlayer(d.currenDameEnemy);
             }
             PopupDamage uIManager = collider.gameObject.GetComponent<PopupDamage>();
             if (uIManager != null)
             {
-                uIManager.PlayerTookDanage(DamePlayer.instance.damePlayer);
+
+                //uIManager.PlayerTookDanage(DamePlayer.instance.damePlayer);
+                //uIManager.PlayerTookDanage(DameEnemy.Instance.currenDameEnemy);
+                uIManager.PlayerTookDanage(d.currenDameEnemy);
             }
         }
 

@@ -5,6 +5,7 @@ using UnityEngine;
 
 public class MonsterCtroller : MonoBehaviour
 {
+    public DameEnemy dameEnemy;
     [SerializeField] private Rigidbody2D rb;
     [SerializeField] private SpriteRenderer spriteRenderer;
     [SerializeField] private Animator ani;
@@ -37,7 +38,7 @@ public class MonsterCtroller : MonoBehaviour
     private void Start()
     {
 
-
+        dameEnemy = GetComponent<DameEnemy>();
         rb = GetComponent<Rigidbody2D>();
         ani = GetComponent<Animator>();
         spriteRenderer = GetComponent<SpriteRenderer>();
@@ -156,13 +157,15 @@ public class MonsterCtroller : MonoBehaviour
             if (dame != null)
             {
               
-                dame.TakeDamePlayer(DameEnemy.Instance.currenDameEnemy);
+                //dame.TakeDamePlayer(DameEnemy.Instance.currenDameEnemy);
+                dame.TakeDamePlayer(dameEnemy.currenDameEnemy);
             }
             PopupDamage uIManager = collider.gameObject.GetComponent<PopupDamage>();
             if (uIManager != null)
             {
                
-                uIManager.PlayerTookDanage(DameEnemy.Instance.currenDameEnemy);
+               // uIManager.PlayerTookDanage(DameEnemy.Instance.currenDameEnemy);
+               uIManager.PlayerTookDanage(dameEnemy.currenDameEnemy);
             }
         }
 

@@ -4,7 +4,7 @@ using UnityEditor;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
-public class GameManager : BaseManager<GameManager> 
+public class GameManager : BaseManager<GameManager>
 {
     //public static gamemanage instance;
 
@@ -24,7 +24,7 @@ public class GameManager : BaseManager<GameManager>
         //cherries = PlayerPrefs.GetInt(Cherrykey, 0);
 
     }
-   
+
     private void Start()
     {
 
@@ -41,8 +41,10 @@ public class GameManager : BaseManager<GameManager>
     public void Pausegame()
     {
 
+        //Debug.Log("0");
         if (isPlaying)
         {
+            //Debug.Log("1");
             isPlaying = false;
             Time.timeScale = 0f;
         }

@@ -23,11 +23,16 @@ public class DameEnemy : MonoBehaviour
     public float Revival = 0f;
     //[SerializeField] private float timeDamePlayer = 0.5f;
 
-    private void Awake()
+    //bình hb
+    //public GameObject healingHB;
+
+
+    protected void Awake()
     {
         Instance = this;
+        Debug.Log(gameObject.name);
     }
-    private void Start()
+    protected void Start()
     {     
         damePlayer = GetComponent<DamePlayer>();
         currentHealth = maxHealth; 
@@ -51,14 +56,14 @@ public class DameEnemy : MonoBehaviour
            
         }
     }
-    private void Die()
+    protected virtual  void Die()
     {
         // Xử lý logic khi Enemy bị tiêu diệt
         Debug.Log("Enemy die.");
        gameObject.SetActive(false);
        
     }
-    void hoi()
+    protected void hoi()
     {
         Debug.Log("hồi");
         gameObject.SetActive(true);
@@ -68,4 +73,5 @@ public class DameEnemy : MonoBehaviour
        image.fillAmount =currentHealth /maxHealth;
     }
 }
+
 
