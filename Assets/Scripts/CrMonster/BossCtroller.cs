@@ -116,7 +116,7 @@ public class BossCtroller : MonoBehaviour
         if (Vector3.Distance(transform.position, player.position) > 1.5f)
         {
             // Di chuyển tới player
-            transform.position = Vector2.MoveTowards(transform.position, player.position, speed * (float)1.5 * Time.deltaTime);
+            transform.position = Vector2.MoveTowards(transform.position, player.position, speed * (float)1.8 * Time.deltaTime);
             //animation
             movementState = MovementState.aniMonsterrun;
             ani.SetInteger("State", (int)movementState);
@@ -153,11 +153,14 @@ public class BossCtroller : MonoBehaviour
         Collider2D collider = Physics2D.OverlapCircle(attatckPosition.position, radius, layerMask);
         if (collider != null)
         {
+            var damage = d.currenDameEnemy + (UnityEngine.Random.Range(-4, 5));
+
             DamePlayer dame = collider.gameObject.GetComponent<DamePlayer>();
             if (dame != null)
             {
                 //dame.TakeDamePlayer(DameEnemy.Instance.currenDameEnemy);
-                dame.TakeDamePlayer(d.currenDameEnemy);
+                //dame.TakeDamePlayer(d.currenDameEnemy);
+                dame.TakeDamePlayer(damage);
             }
             PopupDamage uIManager = collider.gameObject.GetComponent<PopupDamage>();
             if (uIManager != null)
@@ -165,7 +168,8 @@ public class BossCtroller : MonoBehaviour
 
                 //uIManager.PlayerTookDanage(DamePlayer.instance.damePlayer);
                 //uIManager.PlayerTookDanage(DameEnemy.Instance.currenDameEnemy);
-                uIManager.PlayerTookDanage(d.currenDameEnemy);
+                //uIManager.PlayerTookDanage(d.currenDameEnemy);
+                uIManager.PlayerTookDanage(damage);
             }
         }
 

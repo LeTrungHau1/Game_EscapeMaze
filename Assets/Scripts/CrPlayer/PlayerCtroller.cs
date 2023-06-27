@@ -71,12 +71,18 @@ public class PlayerCtroller : MonoBehaviour
 
         if ((Input.GetKeyDown(KeyCode.LeftShift) && canDash) || (Input.GetMouseButton(1) && canDash)) 
         {
-            StartCoroutine(Dash());          
+            
+            StartCoroutine(Dash());
+            if (AudioManager.HasInstance)
+            {
+                AudioManager.Instance.PlaySE("PlayerDash", 0f);
+            }
         }
         if (Input.GetMouseButton(0))
         {
             movementState = MovementState.aniplayerAttack;
             ani.SetInteger("State", (int)movementState);
+            
            
             //boxCollider.enabled = true;
         }
@@ -92,7 +98,8 @@ public class PlayerCtroller : MonoBehaviour
         {
             return;
         }
-        Move();      
+        Move();
+        
     }
 
    
@@ -112,13 +119,15 @@ public class PlayerCtroller : MonoBehaviour
     }
     private void Move()
     {
-        rb.velocity=new Vector2 (directionx * moveSpeed, rb.velocity.y);
+        rb.velocity=new Vector2 (directionx * moveSpeed, rb.velocity.y); 
+            
     }
     private void StateAnimation()
     {
         if (directionx != 0) 
         {
             movementState = MovementState.aniplayerrun;
+           
         }
         else
         {
@@ -226,15 +235,18 @@ public class PlayerCtroller : MonoBehaviour
         Collider2D collider = Physics2D.OverlapCircle(attatckPosition.position, radius, layerMask);
         if (collider != null)
         {
+            var damage = DamePlayer.instance.damePlayer + (UnityEngine.Random.Range(-4, 5));
             DameEnemy dameEnemy = collider.gameObject.GetComponent<DameEnemy>();
             if(dameEnemy != null)
             {
-                dameEnemy.TakeDameEnemy(DamePlayer.instance.damePlayer);
+                //dameEnemy.TakeDameEnemy(DamePlayer.instance.damePlayer);
+                dameEnemy.TakeDameEnemy(damage);
             }
             PopupDamage uIManager = collider.gameObject.GetComponent<PopupDamage>();
             if(uIManager != null)
             {
-                uIManager.EnemyTookDanage(DamePlayer.instance.damePlayer);
+                //uIManager.EnemyTookDanage(DamePlayer.instance.damePlayer);
+                uIManager.EnemyTookDanage(damage);
             }
         }
 
@@ -244,5 +256,27 @@ public class PlayerCtroller : MonoBehaviour
     {
         Gizmos.color = Color.red;
         Gizmos.DrawWireSphere(attatckPosition.position, radius);
+    }
+
+    private void SoundPlayerRun()
+    {
+        if (AudioManager.HasInstance)
+        {
+            AudioManager.Instance.PlaySE("PlayerRun2", 0f);
+        }
+    }
+    private void SoundPlayerAttack()
+    {
+        if (AudioManager.HasInstance)
+        {
+            AudioManager.Instance.PlaySE("PlayerAttack2", 0f);
+        }
+    }
+    private void SoundPlayerDizzy()
+    {
+        if (AudioManager.HasInstance)
+        {
+            AudioManager.Instance.PlaySE("PlayerDizzy", 0f);
+        }
     }
 }

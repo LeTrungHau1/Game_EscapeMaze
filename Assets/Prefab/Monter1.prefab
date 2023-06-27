@@ -533,6 +533,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1b98df42df046e94b9c0c58a330d0207, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  dameEnemy: {fileID: 0}
   rb: {fileID: 0}
   spriteRenderer: {fileID: 0}
   ani: {fileID: 0}
@@ -583,7 +584,10 @@ MonoBehaviour:
   currenDameEnemy: 10
   image: {fileID: 762293346162580012}
   isDamePlayer: 0
-  timeDamePlayer: 0.5
+  initialEnabled: 0
+  OnRevival: 0
+  Revival: 0
+  healingHB: {fileID: 6208875226005391688, guid: ed7e11067167f5e4a901bbd155180df0, type: 3}
 --- !u!1 &5665571513794963673
 GameObject:
   m_ObjectHideFlags: 0

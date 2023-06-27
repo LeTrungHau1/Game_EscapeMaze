@@ -153,19 +153,20 @@ public class MonsterCtroller : MonoBehaviour
         Collider2D collider = Physics2D.OverlapCircle(attatckPosition.position, radius, layerMask);
         if (collider != null)
         {
+            var damage = dameEnemy.currenDameEnemy + (UnityEngine.Random.Range(-4, 5));
             DamePlayer dame = collider.gameObject.GetComponent<DamePlayer>();
             if (dame != null)
             {
               
                 //dame.TakeDamePlayer(DameEnemy.Instance.currenDameEnemy);
-                dame.TakeDamePlayer(dameEnemy.currenDameEnemy);
+                dame.TakeDamePlayer(damage);
             }
             PopupDamage uIManager = collider.gameObject.GetComponent<PopupDamage>();
             if (uIManager != null)
             {
                
                // uIManager.PlayerTookDanage(DameEnemy.Instance.currenDameEnemy);
-               uIManager.PlayerTookDanage(dameEnemy.currenDameEnemy);
+               uIManager.PlayerTookDanage(damage);
             }
         }
 
@@ -191,4 +192,16 @@ public class MonsterCtroller : MonoBehaviour
         Gizmos.color = Color.red;
         Gizmos.DrawWireSphere(attatckPosition.position, radius);
     }
+
+    private void SoundEnemyAttack()
+    {
+        if (AudioManager.HasInstance)
+        {
+            AudioManager.Instance.PlaySE("EnemyAttack");
+
+        }
+    }
+
+
+
 }

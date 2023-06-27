@@ -20,7 +20,12 @@ public class DoorScene : MonoBehaviour
     {
         if(collision.gameObject.CompareTag("Player"))
         {
+            if (AudioManager.HasInstance)
+            {
+                AudioManager.Instance.PlaySE("ThroughDoor", 0f);
+            }
             ani.SetBool("BoolScene2", true);
+           
         }
     }
     public void ThroughScene2()

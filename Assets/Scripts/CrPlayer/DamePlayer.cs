@@ -60,6 +60,11 @@ public class DamePlayer : MonoBehaviour
         Debug.Log("player die.");
         gameObject.SetActive(false);
         //hiện thua
+        if (AudioManager.HasInstance)
+        {
+            AudioManager.Instance.PlaySE("PlayerLoss");
+
+        }
         if (UiManager.HasInstance)
         {
             Time.timeScale = 0f;
