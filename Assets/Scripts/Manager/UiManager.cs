@@ -29,8 +29,12 @@ public class UiManager : BaseManager<UiManager>
     private PausePanel pausePanel;
     public PausePanel PausePanel => pausePanel;
 
+    [SerializeField]
+    private ToturialPanel toturialPanel;
+    public ToturialPanel ToturialPanel => toturialPanel;
 
-    
+
+
 
 
 
@@ -43,7 +47,7 @@ public class UiManager : BaseManager<UiManager>
         ActiveLosePanel(false);
         ActiveVectoryPanel(false);
         ActivePausePanel(false);
-       
+       ActiveToturialPanel(false);
     }
     private void Update()
     {
@@ -81,6 +85,10 @@ public class UiManager : BaseManager<UiManager>
     public void ActivePausePanel(bool active)
     {
         pausePanel.gameObject.SetActive(active);
+    } 
+    public void ActiveToturialPanel(bool active)
+    {
+        toturialPanel.gameObject.SetActive(active);
     }
    
 

@@ -33,4 +33,12 @@ public class MenuPanel : MonoBehaviour
             GameManager.Instance.EndGame();
         }
     }
+    public void OnclickToturialButton()
+    {
+        if (UiManager.HasInstance)
+        {
+
+            UiManager.Instance.ActiveToturialPanel(true);
+        }
+    }
 }
